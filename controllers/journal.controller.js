@@ -46,7 +46,7 @@ const create = expressAsyncHandler(async (req, res) => {
     });
   }
 
-  res.status(200).json({ message: "Journal entry added successfully" });
+  res.status(201).json({ message: "Journal entry added successfully" });
 });
 
 // @desc    Get ledger of an account
