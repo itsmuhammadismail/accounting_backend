@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/", getAll);
 router.delete("/", deleteAll);
 router.post("/", create);
-router.get("/ledger/:id", ledger);
+router.get("/ledger", ledger);
 router.get("/trial", trial);
 router.get("/income", incomeStatement);
 router.get("/balance", balanceSheet);

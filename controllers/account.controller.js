@@ -24,7 +24,18 @@ const create = expressAsyncHandler(async (req, res) => {
   res.status(201).json(account);
 });
 
+// @desc    Delete an account
+// @route   DELETE /api/account
+// @access  public
+const deleteAccount = expressAsyncHandler(async (req, res) => {
+  const { id } = req.body;
+  const account = await Account.findByIdAndDelete(id);
+
+  res.status(201).json(account);
+});
+
 module.exports = {
   getAll,
   create,
+  deleteAccount,
 };

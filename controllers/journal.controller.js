@@ -1,4 +1,5 @@
 const expressAsyncHandler = require("express-async-handler");
+const moment = require("moment");
 
 const Journal = require("../models/journal.model.js");
 const Account = require("../models/account.model.js");
@@ -50,10 +51,10 @@ const create = expressAsyncHandler(async (req, res) => {
 });
 
 // @desc    Get ledger of an account
-// @route   GET /api/journal/ledger/:id
+// @route   GET /api/journal/ledger
 // @access  public
 const ledger = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.query;
 
   const debitAccounts = await Journal.find({
     account: id,
@@ -200,6 +201,8 @@ const incomeStatement = expressAsyncHandler(async (req, res) => {
 // @route   GET /api/journal/balance
 // @access  public
 const balanceSheet = expressAsyncHandler(async (req, res) => {
+  const { date } = req.query;
+
   const assetAccounts = await Account.find({ type: "asset" });
   const liabilityAccouns = await Account.find({
     $or: [{ type: "liability" }, { type: "capital" }],
@@ -212,6 +215,10 @@ const balanceSheet = expressAsyncHandler(async (req, res) => {
     const creditAccounts = await Journal.find({
       account: assetAccounts[i]._id,
       transaction_type: "credit",
+      date: {
+        $gte: moment(new Date(date)).startOf("day").toDate(),
+        $lte: moment(new Date(date)).endOf("day").toDate(),
+      },
     }).populate("account");
 
     let amount = 0;
@@ -233,6 +240,10 @@ const balanceSheet = expressAsyncHandler(async (req, res) => {
     const debitAccounts = await Journal.find({
       account: liabilityAccouns[i]._id,
       transaction_type: "debit",
+      date: {
+        $gte: moment(new Date(date)).startOf("day").toDate(),
+        $lte: moment(new Date(date)).endOf("day").toDate(),
+      },
     }).populate("account");
 
     let amount = 0;
